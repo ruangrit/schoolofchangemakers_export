@@ -215,7 +215,35 @@ function changemakers_export_project()
 {
   global $user;
   module_load_include('inc', 'phpexcel'); 
+  /*
    $headers = array('Project ID','Project Name','Status','Project Owner','Project Member','Coach','Project Stage','Project Type','Start Date','End Date','Description','Working Area','Education','Environment & Sustainability','Health / Fitness','Development & Prosperity','Human Rights & Equality','Civic Engagement','Peace & Harmonious Relation','Business & Social Enterprise','Interest Target Group','Campaign','Partner');  
+   */
+   $headers = array(
+    'Project ID',
+    'Project Name',
+    'Status',
+    'Project Owner',
+    'Project Member',
+    'Coach',
+    'Project Stage',
+    'Project Type',
+    'Start Date',
+    'End Date',
+    'Description',
+    'Working Area',
+    'Education',
+    'Environment & Sustainability',
+    'Health / Fitness',
+    'Development & Prosperity',
+    'Human Rights & Equality',
+    'Civic Engagement',
+    'Peace & Harmonious Relation',
+    'Business & Social Enterprise',
+    'Interest Target Group',
+    'Campaign',
+    'Partner'
+    );  
+
 
 /*
 'Education','Environment & Sustainability','Health / Fitness','Development & Prosperity','Civic Engagement','Peace & Harmonious Relation','Business & Social Enterprise'
