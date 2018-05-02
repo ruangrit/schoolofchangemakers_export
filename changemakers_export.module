@@ -33,6 +33,18 @@ function changemakers_export_menu() {
     'page arguments' => array('changemakers_export_project_owner'),
     'access arguments' => array('access administration pages') 
   );
+   $items['admin/changemakers_export/project/member'] = array(
+    'title' => 'Project Member',
+    'page callback' =>  'drupal_get_form',
+    'page arguments' => array('changemakers_export_project_member'),
+    'access arguments' => array('access administration pages') 
+  );
+   $items['admin/changemakers_export/project/coach'] = array(
+    'title' => 'Project Coach',
+    'page callback' =>  'drupal_get_form',
+    'page arguments' => array('changemakers_export_project_coach'),
+    'access arguments' => array('access administration pages') 
+  );
    $items['admin/changemakers_export/mail'] = array(
     'title' => 'Mail', 
     'page callback' =>  'drupal_get_form',
@@ -217,6 +229,46 @@ $regions ="";
 
 }
 
+function changemakers_export_project_member() {
+  global $user;
+  module_load_include('inc', 'phpexcel'); 
+    $headers = array(
+      'Project ID',
+      "Project Members ID",
+    );  
+  $data = array();
+  $query = db_select('node', 'n');    
+  $query->fields('n',array('nid'))->condition('type', 'project','=');
+  $results = $query->execute();
+
+  while($record = $results->fetchAssoc()) {
+    $nid = $record['nid'];
+    $get_form = changemakers_get_data_from_webform_project($nid); 
+    $get_team  = changemakers_get_team($get_form);
+
+    foreach ($get_team as $key => $value) {
+      $data[] = array($nid, $value['uid']); 
+    }
+  }
+
+  $dir = file_stream_wrapper_get_instance_by_uri('public://')->realpath();
+ 
+  $da = date('Ymd');
+  $filename = 'project_member'.$da.'.xlsx';
+  $path = "$dir/$filename";
+  $options = array('format' => 'xlsx');
+      
+  $result = phpexcel_export($headers, $data, $path, $options);
+
+  if ($result == PHPEXCEL_SUCCESS) {
+      drupal_set_message(t("Export successful"));
+      drupal_set_message(t("<a href='https://www.schoolofchangemakers.com/sites/default/files/".$filename."'>Download</a>"));
+  }
+  else {
+      drupal_set_message(t("Error"), 'error');
+  }
+
+}
 function changemakers_export_project_owner() {
   global $user;
   module_load_include('inc', 'phpexcel'); 
