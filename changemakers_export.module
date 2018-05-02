@@ -229,6 +229,50 @@ $regions ="";
 
 }
 
+function changemakers_export_project_coach() {
+  global $user;
+  module_load_include('inc', 'phpexcel'); 
+    $headers = array(
+      'Project ID',
+      "Project's Coach ID",
+    );  
+  $data = array();
+  $query = db_select('node', 'n');    
+  $query->fields('n',array('nid'))->condition('type', 'project','=');
+  $results = $query->execute();
+
+  while($record = $results->fetchAssoc()) {
+    $nid = $record['nid'];
+    $teams  = changemakers_get_team_project($nid);
+    foreach($teams as $val)
+    { 
+      switch($val['role'])
+      {
+        case "Coach":
+          $data[] = array($nid, $val["uid"]);
+        break;
+      } 
+    }
+
+  }
+  $dir = file_stream_wrapper_get_instance_by_uri('public://')->realpath();
+ 
+  $da = date('Ymd');
+  $filename = 'project_coach'.$da.'.xlsx';
+  $path = "$dir/$filename";
+  $options = array('format' => 'xlsx');
+      
+  $result = phpexcel_export($headers, $data, $path, $options);
+
+  if ($result == PHPEXCEL_SUCCESS) {
+      drupal_set_message(t("Export successful"));
+      drupal_set_message(t("<a href='https://www.schoolofchangemakers.com/sites/default/files/".$filename."'>Download</a>"));
+  }
+  else {
+      drupal_set_message(t("Error"), 'error');
+  }
+
+}
 function changemakers_export_project_member() {
   global $user;
   module_load_include('inc', 'phpexcel'); 
