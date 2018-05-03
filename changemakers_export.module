@@ -792,11 +792,20 @@ function chagemakers_export_mail($key, &$message, $params) {
  
   $file_path='https://www.schoolofchangemakers.com/sites/default/files/';
   $project_today = "project_".date('Ymd')."xlsx";
+  $project_owner_today = "project_owner".date('Ymd')."xlsx";
+  $project_member_today = "project_member".date('Ymd')."xlsx";
+  $project_coach_today = "project_coach".date('Ymd')."xlsx";
   $user_today = "users_".date('Ymd')."xlsx"; 
   $fileproject = $file_path.$project_today;
   $fileuser = $file_path.$user_today;
+  $fileproject_owner = $file_path.$project_owner_today;
+  $fileproject_member = $file_path.$project_member_today;
+  $fileproject_coach = $file_path.$project_coach_today;
  $file1 = file_load($fileproject);
  $file2 = file_load($fileuser);
+ $file3 = file_load($fileproject_owner);
+ $file4 = file_load($fileproject_member);
+ $file5 = file_load($fileproject_coach);
 
  $to = 'parisa.bs@gmail.com';
 $from = 'crm@schoolofchangemakers.com';
@@ -846,7 +855,7 @@ $system = drupal_mail_system($module, $token);
 $message = $system->format($message);
 
 if ($system->mail($message)) {
-  return "Email Send to ".$to." with 2 attachment";
+  return "Email Send to ".$to." with 5 attachment";
 }
 else {
   return "Error to send email";
