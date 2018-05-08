@@ -401,6 +401,18 @@ function changemakers_export_project()
    $query->fields('n',array('nid'))->condition('type', 'project','=');//->condition('nid',11270,'=');  
    $results = $query->execute();
    $area = "";
+
+$maingroup =array(8,9,10,11,12,13,15,86); 
+$problems = array();
+foreach ($maingroup as $key => $value) {
+  $terms = taxonomy_get_children($value);
+  $terms_id = array();
+  foreach ($terms as $key_term => $value_term) {
+    $terms_id[] = $value_term->tid;
+  }
+  $problems[$value] = $terms_id; 
+}
+
   while($record = $results->fetchAssoc()) {
     $nid = $record["nid"]; 
     $node = node_load($nid); 
@@ -451,16 +463,6 @@ function changemakers_export_project()
         $partner =implode(';', $partner_array);
    
  
-$maingroup =array(8,9,10,11,12,13,15,86); 
-$problems = array();
-foreach ($maingroup as $key => $value) {
-  $terms = taxonomy_get_children($value);
-  $terms_id = array();
-  foreach ($terms as $key_term => $value_term) {
-    $terms_id[] = $value_term->tid;
-  }
-  $problems[$value] = $terms_id; 
-}
 /*
 $problems = array(
 8=>array(53,1154,54,56,59,58,1145,55,57,1138),
@@ -629,6 +631,28 @@ $query->fields('u',array('uid','name','created','mail','status'))
  //$query=$query->extend('PagerDefault')->limit(24); 
 $result = $query->execute();
 //$results = $query->execute();
+$maingroup =array(8,9,10,11,12,13,15,86); 
+$problems = array();
+foreach ($maingroup as $key => $value) {
+  $terms = taxonomy_get_children($value);
+  $terms_id = array();
+  foreach ($terms as $key_term => $value_term) {
+    $terms_id[] = $value_term->tid;
+  }
+  $problems[$value] = $terms_id; 
+}
+$main_skill  =array(26,27,28,29,30,31);
+
+$skills = array();
+foreach ($main_skill as $key => $value) {
+  $terms = taxonomy_get_children($value);
+  $terms_id = array();
+  foreach ($terms as $key_term => $value_term) {
+    $terms_id[] = $value_term->tid;
+  }
+  $skills[$value] = $terms_id; 
+}
+
 while($record = $result->fetchAssoc()) {
 
 $uid=$record["uid"];
@@ -673,16 +697,6 @@ $regions ="";
   
  $target_in=array(); 
  
-$maingroup =array(8,9,10,11,12,13,15,86); 
-$problems = array();
-foreach ($maingroup as $key => $value) {
-  $terms = taxonomy_get_children($value);
-  $terms_id = array();
-  foreach ($terms as $key_term => $value_term) {
-    $terms_id[] = $value_term->tid;
-  }
-  $problems[$value] = $terms_id; 
-}
 /*
 $problems = array(
 8=>array(53,1154,54,56,59,58,1145,55,57,1138),
@@ -711,17 +725,6 @@ $problems = array(
                       }  
               }
 
-$main_skill  =array(26,27,28,29,30,31);
-
-$skills = array();
-foreach ($main_skill as $key => $value) {
-  $terms = taxonomy_get_children($value);
-  $terms_id = array();
-  foreach ($terms as $key_term => $value_term) {
-    $terms_id[] = $value_term->tid;
-  }
-  $skills[$value] = $terms_id; 
-}
 /*
 $skills = array(
   26=>array(33,35,37,34,36),
