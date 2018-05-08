@@ -557,6 +557,7 @@ module_load_include('inc', 'phpexcel');  //
 /*
   $headers = array('User Unique ID','Contact Type','SOC Status','Join since','First Name','Nickname','Last Name','Email','Mobile number','Date of Birth','Current Career','Organization','Project','Project Role','Address','Province','Zipcode','Reqions','Social Media Channel','Social Media ID/Name','Computer/IT','Business and Industry','Communication','Art & Craft','Sports and Entertainment','Social Enterprise','Education','Environment & Sustainability','Health / Fitness','Development & Prosperity','Human Rights & Equality','Civic Engagement','Peace & Harmonious Relation','Business & Social Enterprise','Interested Target Group','Mail Subsriber','Note','Lastest Modified');  
   */
+  echo "Start time is " . date("h:i:sa");
   $headers = array(
     'User Unique ID',
     'Contact Type',
@@ -627,7 +628,7 @@ $query->fields('u',array('uid','name','created','mail','status'))
   break;
 }*/
   //$query->orderBy('created', 'ASC')->range(0,500);
-  $query->orderBy('created', 'ASC');
+  $query->orderBy('created', 'ASC')->range(0, 1);
  //$query=$query->extend('PagerDefault')->limit(24); 
 $result = $query->execute();
 //$results = $query->execute();
@@ -783,6 +784,7 @@ $skills = array(
     if ($result == PHPEXCEL_SUCCESS) {
         drupal_set_message(t("Export successful"));
         drupal_set_message(t("<a href='https://www.schoolofchangemakers.com/sites/default/files/".$filename."'>Download</a>"));
+        echo "Success time is " . date("h:i:sa");
     }
     else {
         drupal_set_message(t("Error"), 'error');
