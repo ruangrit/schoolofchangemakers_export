@@ -350,6 +350,7 @@ function changemakers_export_project_owner() {
 
 function changemakers_export_project()
 {
+  echo "Start time is " . date("h:i:sa");
   global $user;
   module_load_include('inc', 'phpexcel'); 
   /*
@@ -404,11 +405,13 @@ function changemakers_export_project()
 
 $maingroup =array(8,9,10,11,12,13,15,86); 
 $problems = array();
+$problems_load = array();
 foreach ($maingroup as $key => $value) {
   $terms = taxonomy_get_children($value);
   $terms_id = array();
   foreach ($terms as $key_term => $value_term) {
     $terms_id[] = $value_term->tid;
+    $problems_load[$value_term->tid] = $value_term;
   }
   $problems[$value] = $terms_id; 
 }
@@ -485,7 +488,7 @@ $problems = array(
               {    $tid =  $val["tid"];  
                       foreach($problems as $key=>$val){  
                        if(in_array($tid, $val)){   
-                          $problem_tax[$key][]=  taxonomy_term_load($tid)->name;
+                          $problem_tax[$key][]=  $problems_load[$tid]->name;
                         }
                           $problem[$key] =implode(';', $problem_tax[$key]);
                       }  
@@ -544,6 +547,7 @@ $problems = array(
     if ($result == PHPEXCEL_SUCCESS) {
         drupal_set_message(t("Export successful"));
         drupal_set_message(t("<a href='https://www.schoolofchangemakers.com/sites/default/files/".$filename."'>Download</a>"));
+      echo "Success time is " . date("h:i:sa");
     }
     else {
         drupal_set_message(t("Error"), 'error');
@@ -606,7 +610,8 @@ $query = db_select('users', 'u');
 $query->leftjoin('users_roles','r' , 'u.uid = r.uid');
 $query->leftjoin('role','re' , 're.rid = r.rid');   
 $query->fields('u',array('uid','name','created','mail','status'))  
-  ->condition('r.rid', array(4,5,10),'IN'); 
+  ->condition('r.rid', array(4,5,10),'IN');
+  //->condition('u.uid', 2493,'>='); 
   /*
   switch($arg1)
 {
@@ -628,31 +633,44 @@ $query->fields('u',array('uid','name','created','mail','status'))
   break;
 }*/
   //$query->orderBy('created', 'ASC')->range(0,500);
-  $query->orderBy('created', 'ASC')->range(0, 1);
+  $query->orderBy('created', 'ASC');
  //$query=$query->extend('PagerDefault')->limit(24); 
 $result = $query->execute();
 //$results = $query->execute();
-$maingroup =array(8,9,10,11,12,13,15,86); 
+$maingroup =array(8,9,10,11,12,13,15,86);
+$problems_load = array(); 
 $problems = array();
 foreach ($maingroup as $key => $value) {
   $terms = taxonomy_get_children($value);
   $terms_id = array();
   foreach ($terms as $key_term => $value_term) {
     $terms_id[] = $value_term->tid;
+    $problems_load[$value_term->tid] = $value_term;
   }
   $problems[$value] = $terms_id; 
 }
+
 $main_skill  =array(26,27,28,29,30,31);
 
 $skills = array();
+$skills_load = array();
 foreach ($main_skill as $key => $value) {
   $terms = taxonomy_get_children($value);
   $terms_id = array();
   foreach ($terms as $key_term => $value_term) {
     $terms_id[] = $value_term->tid;
+    $skills_load[$value_term->tid] = $value_term;
   }
   $skills[$value] = $terms_id; 
 }
+
+$target_load = array();
+$target_terms = taxonomy_get_tree(5);
+
+foreach ($target_terms as $key_term => $value_term) {
+  $target_load[$value_term->tid] = $value_term;
+}
+//dpm($target_load);
 
 while($record = $result->fetchAssoc()) {
 
@@ -720,7 +738,8 @@ $problems = array(
               {    $tid =  $val["tid"];  
                       foreach($problems as $key=>$val){  
                        if(in_array($tid, $val)){   
-                          $problem_tax[$key][]=  taxonomy_term_load($tid)->name;
+                          //$problem_tax[$key][]=  taxonomy_term_load($tid)->name;
+                          $problem_tax[$key][]=  $problems_load[$tid]->name;
                         }
                           $problem[$key] =implode(';', $problem_tax[$key]);
                       }  
@@ -745,10 +764,14 @@ $skills = array(
               {    $tid =  $val["tid"];  
                       foreach($skills as $key=>$val){  
                        if(in_array($tid, $val)){   
-                         if($tid==39)
-                         $skill_tax[$key][]=  taxonomy_term_load($tid)->name.' '.$l;
-                         else
-                          $skill_tax[$key][]=  taxonomy_term_load($tid)->name;
+                          if($tid==39){
+                            //$skill_tax[$key][]=  taxonomy_term_load($tid)->name.' '.$l;
+                            $skill_tax[$key][]=  $skills_load[$tid]->name.' '.$l;
+                          }
+                          else{
+                            //$skill_tax[$key][]=  taxonomy_term_load($tid)->name;
+                            $skill_tax[$key][]=  $skills_load[$tid]->name;
+                          }
                         }
                           $skill[$key] =implode(';', $skill_tax[$key]);
                       }  
@@ -761,8 +784,9 @@ $skills = array(
   
 	 for ($i=0; $i <  $countRow2 ; $i++) 
 	 {   
-	 $target_in[] =taxonomy_term_load($target_group[$i]['tid'])->name; 
-    }	
+	   //$target_in[] = taxonomy_term_load($target_group[$i]['tid'])->name; 
+     $target_in[] = $target_load[$target_group[$i]['tid']]->name; 
+   }	
    $tar_in =implode(';', $target_in);
   }
    
